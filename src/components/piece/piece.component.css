@@ -1,0 +1,17 @@
+.piece {
+  height: 80%;
+  width: 80%;
+}
+
+.piece > img {
+  height: 100%;
+  width: 100%;
+}
+
+.piece-white {
+
+}
+
+.piece-black {
+
+}

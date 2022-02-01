@@ -1,0 +1,19 @@
+div.chess-block {
+  width: calc(100% / 8);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.block-white {
+  background-color: var(--default-white);
+}
+
+.block-black {
+  background-color: var(--default-black);
+}
+
+.piece-available {
+  cursor: pointer;
+}
