@@ -13,10 +13,11 @@ export default class FenParser {
     if(this.isFenStringInvalid()){
       throw new Error('Invalid FEN string!');
     }
-    this.getBoardData(fenString);
+    this.initializeBoardData(fenString);
   }
 
-  getBoardData(fenString){
+  initializeBoardData(fenString){
+    // create a new empty chess board
     this.boardMatrix = (new ChessBoardConfig(true)).boardMatrix;
     const [ piecePositionString ] = fenString.split(' ');
     this.updatePostionsForPieces(piecePositionString);
@@ -31,7 +32,6 @@ export default class FenParser {
         colIndex++;
         if(!Number.isNaN(+block)){
           colIndex = colIndex + (block - 1);
-          console.log(`Row: ${rowIndex}, Col: ${colIndex}, Block Index: ${block}`);
           return;
         } else {
           const pieceName = FenMapping[block.toLowerCase()];

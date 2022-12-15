@@ -2,26 +2,43 @@ import React from 'react';
 import Board from '../board/board.component';
 import './game.component.css';
 import { ChessBoardConfig } from '../../models/chessBoardConfig';
-import FenParser from '../../utilities/fen-parser';
+import { BoardData } from '../../models/board';
+import store from '../../models/state/state';
+import { BoardAction, BoardActionEnum, BoardState } from '../../models/state/state-models';
+import { Colors } from '../../models/colors';
 
+interface GameState {
+  boardData: BoardData,
+  fenString: string,
+  playerTurn: Colors,
+  highlightedBlockNumbers: number[]
+}
 export default class Game extends React.Component{
-  props: any;
-  state: any;
-  boardMatrix: any = [];
+  state: GameState;
+  boardMatrix: BoardData = [];
   constructor(props: any){
     super(props);
     this.initializeBoardMatrix();
     this.state = {
       boardData: this.boardMatrix,
-      fenString: ''
+      fenString: '',
+      playerTurn: Colors.WHITE,
+      highlightedBlockNumbers: []
     };
+  }
+
+  componentDidMount(): void {
+    store.subscribe(() => {
+      const boardState: BoardState = store.getState();
+      this.setState({boardData: boardState.boardData, playerTurn: boardState.playerTurn, highlightedBlockNumbers: boardState.highlightedBlockNumbers});
+    });
   }
 
   render(){
     return (
       <div className="game-container">
         <div className='board-container'>
-          <Board boardData={this.state.boardData}></Board>
+          <Board boardData={this.state.boardData} highlightedBlockNumbers={this.state.highlightedBlockNumbers}></Board>
           <input type="text" value={this.state.fenString} placeholder='Enter you FEN string here' onChange={(e) => this.handleFenStringUpdate(e)} />
           <button onClick={() => this.handleFenStringSubmit()}>Generate Board Config</button>
         </div>
@@ -32,12 +49,18 @@ export default class Game extends React.Component{
   handleFenStringUpdate($event: any){
     const fenString = $event.target.value;
     this.setState({fenString: fenString});
-    console.log(fenString);
   }
 
   handleFenStringSubmit(){
-    const fenParser = new FenParser(this.state.fenString);
-    this.setState({boardData: fenParser.boardMatrix});
+    const action: BoardAction = {
+      type: BoardActionEnum.UPDATE,
+      payload: {
+        pieceConfig: {
+          fenString: this.state.fenString
+        }
+      }
+    };
+    store.dispatch(action);
   }
 
   initializeBoardMatrix(){

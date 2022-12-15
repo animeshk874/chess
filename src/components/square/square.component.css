@@ -1,9 +1,24 @@
 div.chess-block {
+  position: relative;
   width: calc(100% / 8);
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+div.chess-block::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background-color: #7B61FF;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .block-white {
@@ -12,6 +27,11 @@ div.chess-block {
 
 .block-black {
   background-color: var(--default-black);
+}
+
+div.highlighted-square::after {
+  opacity: 0.5 !important;
+  /* background-color: hsla(0, 0%, 0%, 0.05); */
 }
 
 .piece-available {
